@@ -25,7 +25,9 @@ Alternatively you can download it and extract it into `fuel/packages/storage/`.
 ## Usage
 
 ```php
-$storage = Storage::instance();
+$file = Storage::load('info.php');
+
+Storage::save('log.txt', 'success');
 ```
 
 ## Updates
