@@ -99,6 +99,43 @@ class Storage
 	{
 		return \Config::get(self::$_namespace . '.' .  $name, $default);
 	}
+	
+	/**
+	 * Loads item from storage driver.
+	 * 
+	 * @param string $path The path to the item to get.
+	 *
+	 * @return bool|string
+	 */
+	public static function load($path)
+	{
+		return static::instance()->load($path);
+	}
+	
+	/**
+	 * Saves item in storage driver.
+	 * 
+	 * @param string $path The path to store item at.
+	 * @param mixed  $data The data to store.
+	 *
+	 * @return bool
+	 */
+	public static function save($path, $data)
+	{
+		return static::instance()->save($path, $data);
+	}
+	
+	/**
+	 * Gets the url to link to item in storage driver.
+	 * 
+	 * @param string $path The path to the item to link.
+	 *
+	 * @return string
+	 */
+	public static function url($path)
+	{
+		return static::instance()->url($path);
+	}
 }
 
 class StorageException extends \FuelException {}
