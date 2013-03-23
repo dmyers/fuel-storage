@@ -55,6 +55,6 @@ class Storage_AmazonS3 extends Storage_Driver
 	 */
 	public function url($path)
 	{
-		return self::$instance->url($path);
+		return self::$instance->url(null, $path);
 	}
 }
