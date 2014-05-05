@@ -47,6 +47,6 @@ class Storage_File extends Storage_Driver
 	 */
 	public function url($path)
 	{
-		return \Uri::forge($path);
+		return $this->config('url') . $path;
 	}
 }
