@@ -7,7 +7,7 @@ return array(
 	'driver' => 'file',
 	
 	'file' => array(
-		'url' => \Uri::forge('files'),
+		'url' => \Uri::create('files'),
 		'path' => DOCROOT . 'files',
 	),
 );
