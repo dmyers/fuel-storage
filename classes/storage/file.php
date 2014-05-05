@@ -13,7 +13,7 @@ class Storage_File extends Storage_Driver
 	 */
 	public function load($path)
 	{
-		return file_get_contents($path);
+		return file_get_contents($this->compute_path($path));
 	}
 	
 	/**
@@ -26,7 +26,7 @@ class Storage_File extends Storage_Driver
 	 */
 	public function save($path, $data)
 	{
-		$fp = fopen($path, 'w');
+		$fp = fopen($this->compute_path($path), 'w');
 		
 		if (!$fp) {
 			return false;
@@ -48,5 +48,21 @@ class Storage_File extends Storage_Driver
 	public function url($path)
 	{
 		return $this->config('url') . $path;
+	}
+	
+	public function compute_path($path)
+	{
+		return $this->config('root_path') . DS . $path;
+	}
+	
+	protected function ensure_dir_exists($path)
+	{
+		$parts = explode('/', $path);
+		unset($parts[count($parts)-1]);
+		$path = implode('/', $parts);
+
+		if (!is_dir($path)) {
+			mkdir($path, 0777, true);
+		}
 	}
 }
