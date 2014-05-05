@@ -33,7 +33,7 @@ class Storage_File extends Storage_Driver
 		}
 		
 		fwrite($fp, $data);
-		fclose();
+		fclose($fp);
 		
 		return true;
 	}
