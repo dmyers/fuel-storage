@@ -47,7 +47,7 @@ class Storage_File extends Storage_Driver
 	 */
 	public function url($path)
 	{
-		return $this->config('url') . $path;
+		return $this->config('url') . DS . $path;
 	}
 	
 	public function compute_path($path)
