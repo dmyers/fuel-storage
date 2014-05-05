@@ -52,7 +52,7 @@ class Storage_File extends Storage_Driver
 	
 	public function compute_path($path)
 	{
-		$path = $this->config('root_path') . DS . $path;
+		$path = $this->config('path') . DS . $path;
 		
 		$this->ensure_dir_exists($path);
 		
