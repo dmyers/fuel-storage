@@ -8,5 +8,6 @@ return array(
 	
 	'file' => array(
 		'url' => \Uri::forge('files'),
+		'path' => DOCROOT . 'files',
 	),
 );
