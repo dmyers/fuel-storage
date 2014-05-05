@@ -13,6 +13,10 @@ class Storage_File extends Storage_Driver
 	 */
 	public function load($path)
 	{
+		if (!is_file($path)) {
+			throw new \FuelException('File does not exist at path (' . $path . ')');
+		}
+		
 		return file_get_contents($this->compute_path($path));
 	}
 	
