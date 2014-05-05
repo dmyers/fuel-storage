@@ -4,6 +4,15 @@ namespace Storage;
 
 abstract class Storage_Driver
 {
+	public function config($key, $default = null)
+	{
+		$name = get_class($this);
+		$name = str_replace('Storage\Storage_', '', $name);
+		$name = \Str::lower($name);
+		
+		return Storage::config($name . '.' . $key, $default);
+	}
+	
 	/**
 	 * Loads item from storage driver.
 	 * 
