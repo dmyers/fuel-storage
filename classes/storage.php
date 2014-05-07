@@ -65,6 +65,17 @@ class Storage
 	 */
 	final private function __construct() {}
 	
+	public static function __callStatic($method, $args)
+	{
+		$instance = static::instance();
+
+		if (!method_exists($instance, $method)) {
+			throw new \BadMethodCallException("Method {$method} does not exist.");
+		}
+
+		return call_user_func_array(array($instance, $method), $args);
+	}
+	
 	/**
 	 * Create or return the driver instance.
 	 *
@@ -98,43 +109,6 @@ class Storage
 	public static function config($name, $default = null)
 	{
 		return \Config::get(self::$_namespace . '.' .  $name, $default);
-	}
-	
-	/**
-	 * Loads item from storage driver.
-	 * 
-	 * @param string $path The path to the item to get.
-	 *
-	 * @return bool|string
-	 */
-	public static function load($path)
-	{
-		return static::instance()->load($path);
-	}
-	
-	/**
-	 * Saves item in storage driver.
-	 * 
-	 * @param string $path The path to store item at.
-	 * @param mixed  $data The data to store.
-	 *
-	 * @return bool
-	 */
-	public static function save($path, $data)
-	{
-		return static::instance()->save($path, $data);
-	}
-	
-	/**
-	 * Gets the url to link to item in storage driver.
-	 * 
-	 * @param string $path The path to the item to link.
-	 *
-	 * @return string
-	 */
-	public static function url($path)
-	{
-		return static::instance()->url($path);
 	}
 }
 
