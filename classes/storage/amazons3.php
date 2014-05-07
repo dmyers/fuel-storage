@@ -2,21 +2,35 @@
 
 namespace Storage;
 
+use \Aws\S3\S3Client;
+
 class Storage_AmazonS3 extends Storage_Driver
 {
-	protected static $instance;
+	protected $client;
+	protected $bucket;
 	
 	public static function _init()
 	{
-		\Package::load('amazons3');
-		
+		\Package::load('amazon');
+	}
+	
+	public function __construct()
+	{
 		try {
-			$instance = \AmazonS3::instance();
+			$amazon = \Amazon::instance();
 		} catch (\AmazonS3Exception $e) {
 			return;
 		}
 		
-		self::$instance = $instance;
+		$bucket = $this->config('bucket');
+		
+		if (empty($bucket)) {
+			throw new \StorageException('You must set the bucket config');
+		}
+		
+		$this->bucket = $bucket;
+		
+		$this->client = $amazon->get('s3');
 	}
 	
 	/**
@@ -28,9 +42,10 @@ class Storage_AmazonS3 extends Storage_Driver
 	 */
 	public function load($path)
 	{
-		$data = self::$instance->getObject(null, $path);
-		
-		return $data->body;
+		return (string) $this->client->getObject(array(
+			'Bucket' => $this->bucket,
+			'Key'    => $this->compute_path($path),
+		))->get('Body');
 	}
 	
 	/**
@@ -43,7 +58,12 @@ class Storage_AmazonS3 extends Storage_Driver
 	 */
 	public function save($path, $data)
 	{
-		return self::$instance->putObject($data, null, $path);
+		return $this->client->putObject(array(
+			'Bucket' => $this->bucket,
+			'Key'    => $this->compute_path($path),
+			'Body'   => $contents,
+			'ACL'    => $this->config('acl', 'public-read'),
+		));
 	}
 	
 	/**
@@ -55,6 +75,31 @@ class Storage_AmazonS3 extends Storage_Driver
 	 */
 	public function url($path)
 	{
-		return self::$instance->url(null, $path);
+		return $this->client->getObjectUrl($this->bucket, $this->compute_path($path));
+	}
+	
+	protected function ensure_bucket_exists()
+	{
+		if (!$this->bucket_exists()) {
+			$client->createBucket(array(
+				'Bucket' => $bucket,
+			));
+
+			$client->waitUntilBucketExists(array(
+				'Bucket' => $bucket,
+			));
+		}
+	}
+
+	protected function bucket_exists()
+	{
+		return $this->client->doesBucketExist($this->bucket);
+	}
+
+	protected function compute_path($path)
+	{
+		$this->ensure_bucket_exists();
+
+		return S3Client::encodeKey($path);
 	}
 }
