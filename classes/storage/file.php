@@ -4,6 +4,15 @@ namespace Storage;
 
 class Storage_File extends Storage_Driver
 {
+	public function __construct()
+	{
+		$path = $this->config('path');
+		
+		if (!is_dir($path)) {
+			mkdir($path, 0777, true);
+		}
+	}
+	
 	/**
 	 * Loads item from storage driver.
 	 * 
