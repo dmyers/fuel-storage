@@ -163,12 +163,12 @@ class Storage_AmazonS3 extends Storage_Driver
 	protected function ensure_bucket_exists()
 	{
 		if (!$this->bucket_exists()) {
-			$client->createBucket(array(
-				'Bucket' => $bucket,
+			$this->client->createBucket(array(
+				'Bucket' => $this->bucket,
 			));
 
-			$client->waitUntilBucketExists(array(
-				'Bucket' => $bucket,
+			$this->client->waitUntilBucketExists(array(
+				'Bucket' => $this->bucket,
 			));
 		}
 	}
