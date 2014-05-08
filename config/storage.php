@@ -8,6 +8,7 @@ return array(
 	
 	'amazons3' => array(
 		'bucket' => 'your_bucket',
+		'acl'    => 'public-read',
 	),
 	
 	'file' => array(
