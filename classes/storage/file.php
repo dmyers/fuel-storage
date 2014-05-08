@@ -14,11 +14,23 @@ class Storage_File extends Storage_Driver
 	}
 	
 	/**
+	 * Check if an item exists in storage driver.
+	 *
+	 * @param string $path The path to the item to check.
+	 *
+	 * @return bool
+	 */
+	public function exists($path)
+	{
+		return file_exists($this->compute_path($path));
+	}
+	
+	/**
 	 * Loads item from storage driver.
 	 * 
 	 * @param string $path The path to the item to get.
 	 *
-	 * @return bool|string
+	 * @return string
 	 */
 	public function load($path)
 	{
@@ -51,6 +63,58 @@ class Storage_File extends Storage_Driver
 		fclose($fp);
 		
 		return true;
+	}
+	
+	/**
+	 * Gets mime for an item in storage driver.
+	 * 
+	 * @param string $path The path to the item to get the mime.
+	 *
+	 * @return string
+	 */
+	public function mime($path)
+	{
+		$finfo = new \Finfo(FILEINFO_MIME_TYPE);
+
+		return $finfo->file($this->compute_path($path));
+	}
+	
+	/**
+	 * Uploads an item in storage driver.
+	 * 
+	 * @param string $local The path to get item at.
+	 * @param string $path  The path to store item at.
+	 *
+	 * @return bool
+	 */
+	public function upload($local, $path)
+	{
+		return copy($local, $this->compute_path($path));
+	}
+	
+	/**
+	 * Downloads an item from storage driver.
+	 * 
+	 * @param string $path  The path to get item at.
+	 * @param string $local The path to store item at.
+	 *
+	 * @return bool
+	 */
+	public function download($path, $local)
+	{
+		return copy($this->compute_path($path), $local);
+	}
+	
+	/**
+	 * Delete an item in storage driver.
+	 *
+	 * @param string $path The path to item to delete.
+	 *
+	 * @return bool
+	 */
+	public function delete($path)
+	{
+		return @unlink($this->compute_path($path));
 	}
 	
 	/**

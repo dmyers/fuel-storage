@@ -34,11 +34,23 @@ class Storage_AmazonS3 extends Storage_Driver
 	}
 	
 	/**
+	 * Check if an item exists in storage driver.
+	 *
+	 * @param string $path The path to the item to check.
+	 *
+	 * @return bool
+	 */
+	public function exists($path)
+	{
+		return $this->client->doesObjectExist($this->bucket, $this->compute_path($path));
+	}
+	
+	/**
 	 * Loads item from storage driver.
 	 * 
 	 * @param string $path The path to the item to get.
 	 *
-	 * @return bool|string
+	 * @return string
 	 */
 	public function load($path)
 	{
@@ -63,6 +75,76 @@ class Storage_AmazonS3 extends Storage_Driver
 			'Key'    => $this->compute_path($path),
 			'Body'   => $contents,
 			'ACL'    => $this->config('acl', 'public-read'),
+		));
+	}
+	
+	/**
+	 * Gets mime for an item in storage driver.
+	 * 
+	 * @param string $path The path to the item to get the mime.
+	 *
+	 * @return string
+	 */
+	public function mime($path)
+	{
+		$object = $this->client->headObject(array(
+			'Bucket' => $this->bucket,
+			'Key'    => $this->compute_path($path),
+		));
+
+		return $object['ContentType'];
+	}
+	
+	/**
+	 * Uploads an item in storage driver.
+	 * 
+	 * @param string $path The path to store item at.
+	 * @param string $path The path to get item at.
+	 *
+	 * @return bool
+	 */
+	public function upload($path, $target)
+	{
+		$finfo = new \Finfo(FILEINFO_MIME_TYPE);
+		
+		return $this->client->putObject(array(
+			'Bucket'      => $this->bucket,
+			'Key'         => $this->compute_path($target),
+			'SourceFile'  => $path,
+			'ContentType' => $finfo->file($path),
+			'ACL'         => $this->config('acl', 'public-read'),
+		));
+	}
+	
+	/**
+	 * Downloads an item from storage driver.
+	 * 
+	 * @param string $path The path to get item at.
+	 * @param string $path The path to store item at.
+	 *
+	 * @return bool
+	 */
+	public function download($path, $target)
+	{
+		return $this->client->getObject(array(
+			'Bucket' => $this->bucket,
+			'Key'    => $this->compute_path($path),
+			'SaveAs' => $target,
+		));
+	}
+	
+	/**
+	 * Delete an item in storage driver.
+	 *
+	 * @param string $path The path to item to delete.
+	 *
+	 * @return bool
+	 */
+	public function delete($path)
+	{
+		return $this->client->deleteObject(array(
+			'Bucket' => $this->bucket,
+			'Key'    => $this->compute_path($path),
 		));
 	}
 	

@@ -12,7 +12,7 @@ class Storage
 	protected static $_namespace = 'storage';
 	
 	/**
-	 * Loaded registrar driver instance.
+	 * Loaded storage driver instance.
 	 *
 	 * @var Storage
 	 */
